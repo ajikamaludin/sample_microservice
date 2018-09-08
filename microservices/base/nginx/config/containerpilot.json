@@ -1,0 +1,42 @@
+{
+    "consul": "{{ if .CONSUL_AGENT }}localhost{{ else }}{{ .CONSUL }}{{ end }}:8500",
+    "logging": {"level": "DEBUG"}, 
+    "jobs": [
+      {
+        "name": "preStart",
+        "exec": "/usr/local/bin/reload.sh preStart"
+      },
+      {
+        "name": "nginx",
+        "port": 80,
+        "interfaces": ["eth1","eth0"],
+        "exec": "nginx",
+        "when": {
+          "source": "preStart",
+          "once": "exitSuccess"
+        },
+        "health": {
+          "exec": "/usr/bin/curl -o /dev/null --fail -s http://127.0.0.1/health",
+          "interval": 10,
+          "ttl": 25
+        }
+      },
+      {
+        "name": "onchange-fpm",
+        "exec": "/usr/local/bin/reload.sh onChange",
+        "when": {
+          "source": "watch.fpm",
+          "each": "changed"
+        }
+      }
+    ],
+    "watches": [
+      {
+        "name": "fpm",
+        "interval": 3
+      }
+    ],
+    "telemetry": {
+        "port": 9090
+    }
+}

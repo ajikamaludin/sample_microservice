@@ -1,0 +1,41 @@
+{
+    "consul": "{{ if .CONSUL_AGENT }}localhost{{ else }}{{ .CONSUL }}{{ end }}:8500",
+    "logging": {"level": "DEBUG"},
+    "jobs": [
+        {
+            "name": "preStart",
+            "exec": "/usr/local/bin/reload.sh preStart"
+        },
+        {
+            "name": "fpm",
+            "port": 9000,
+            "interfaces": ["eth0"],
+            "when": {
+                "source": "preStart",
+                "once": "exitSuccess"
+            },
+            "health": {
+              "exec": "/usr/local/sbin/php-fpm -t",
+              "interval": 3,
+              "ttl": 10
+            }
+        },
+        {
+          "name": "onchange-nginx",
+          "exec": "/usr/local/bin/reload.sh onChange",
+          "when": {
+                "source": "watch.nginx",
+                "each": "changed"
+            }
+        }
+    ],
+    "watches": [
+        {
+            "name": "nginx",
+            "interval": 3
+        }
+    ],
+    "telemetry": {
+        "port": 9090
+    }
+}

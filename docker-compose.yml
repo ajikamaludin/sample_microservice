@@ -1,0 +1,50 @@
+version: '2'
+services:
+    autodiscovery:
+        build: ./autodiscovery/
+        mem_limit: 128m
+        expose:
+            - 53
+            - 8300
+            - 8301
+            - 8302
+            - 8400
+            - 8500
+        ports:
+            - 8500:8500
+        dns:
+            - 127.0.0.1
+
+    nginx:
+        build: ./microservices/base/nginx/
+        volumes_from:
+            - source_battle
+        links:
+            - autodiscovery
+            - fpm_micro
+        environment:
+            - BACKEND=fpm_micro
+            - CONSUL=autodiscovery
+        ports:
+            - 8080:80
+            - 9090:9090
+
+    fpm_micro:
+        build: ./microservices/base/php-fpm/
+        volumes_from:
+            - source_battle
+        links:
+            - autodiscovery
+        expose:
+            - 9000
+        environment:
+            - BACKEND=nginx
+            - CONSUL=autodiscovery
+        ports:
+            - 8081:8081
+
+    source_battle:
+        image: nginx:stable
+        volumes: 
+            - ../source/battle:/var/www/html
+        command: "true"
