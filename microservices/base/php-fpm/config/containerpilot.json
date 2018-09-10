@@ -7,7 +7,7 @@
             "exec": "/usr/local/bin/reload.sh preStart"
         },
         {
-            "name": "fpm",
+            "name": "fpm-micro",
             "port": 9000,
             "interfaces": ["eth0"],
             "when": {

@@ -21,15 +21,15 @@ services:
             - source_battle
         links:
             - autodiscovery
-            - fpm_micro
+            - fpm-micro
         environment:
-            - BACKEND=fpm_micro
+            - BACKEND=fpm-micro
             - CONSUL=autodiscovery
         ports:
             - 8080:80
             - 9090:9090
 
-    fpm_micro:
+    fpm-micro:
         build: ./microservices/base/php-fpm/
         volumes_from:
             - source_battle

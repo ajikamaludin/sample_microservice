@@ -25,14 +25,14 @@
         "name": "onchange-fpm",
         "exec": "/usr/local/bin/reload.sh onChange",
         "when": {
-          "source": "watch.fpm",
+          "source": "watch.fpm-micro",
           "each": "changed"
         }
       }
     ],
     "watches": [
       {
-        "name": "fpm",
+        "name": "fpm-micro",
         "interval": 3
       }
     ],
