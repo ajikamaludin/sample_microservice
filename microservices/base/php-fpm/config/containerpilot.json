@@ -1,7 +1,12 @@
 {
     "consul": "{{ if .CONSUL_AGENT }}localhost{{ else }}{{ .CONSUL }}{{ end }}:8500",
-    "logging": {"level": "DEBUG"},
+    "logging": {
+        "level": "DEBUG",
+        "format": "default",
+        "output": "stdout"
+    },
     "jobs": [
+        
         {
             "name": "preStart",
             "exec": "/usr/local/bin/reload.sh preStart"

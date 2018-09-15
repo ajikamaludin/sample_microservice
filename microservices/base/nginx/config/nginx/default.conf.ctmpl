@@ -1,0 +1,39 @@
+{{ $backend := env "BACKEND" }}
+{{ if service $backend }}
+upstream {{ $backend }} {
+    # write the address:port pairs for each healthy backend instance
+    {{range service $backend }}
+    server {{.Address}}:{{.Port}};
+    {{end}}
+    least_conn;
+}{{ end }}
+
+server {
+    listen 80 default_server;
+    index index.php index.html;
+    server_name _;
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+    root /var/www/html/public;
+
+
+    location /health {
+        access_log off;
+        error_log off;
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+
+    {{ if service $backend }}
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass {{ $backend }};
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+    {{ end }}
+}

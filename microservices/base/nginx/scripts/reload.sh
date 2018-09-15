@@ -4,19 +4,29 @@ SERVICE_NAME=${SERVICE_NAME:-nginx}
 CONSUL=${CONSUL:-consul}
 
 preStart() {
+    # consul-template \
+    #     -once \
+    #     -dedup \
+    #     -consul-addr ${CONSUL}:8500 \
+    #     -template "/etc/containerpilot/nginx.conf.ctmpl:/etc/nginx/nginx.conf"
     consul-template \
         -once \
         -dedup \
         -consul-addr ${CONSUL}:8500 \
-        -template "/etc/containerpilot/nginx.conf.ctmpl:/etc/nginx/nginx.conf"
+        -template "/etc/containerpilot/default.conf.ctmpl:/etc/nginx/conf.d/default.conf"
     # echo ""
 }
 
 onChange() {
+    # consul-template \
+    #     -once \
+    #     -consul-addr ${CONSUL}:8500 \
+    #     -template "/etc/containerpilot/nginx.conf.ctmpl:/etc/nginx/nginx.conf"
     consul-template \
         -once \
+        -dedup \
         -consul-addr ${CONSUL}:8500 \
-        -template "/etc/containerpilot/nginx.conf.ctmpl:/etc/nginx/nginx.conf"
+        -template "/etc/containerpilot/default.conf.ctmpl:/etc/nginx/conf.d/default.conf"
     # echo ""
 }
 

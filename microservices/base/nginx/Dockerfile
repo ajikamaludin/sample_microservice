@@ -27,12 +27,10 @@ RUN tar zxf /tmp/containerpilot.tar.gz -C /usr/local/bin \
 COPY config/ /etc
 COPY scripts/ /usr/local/bin
 
-COPY file/index.html /var/www/html/index.html
-
 RUN chmod +x /usr/local/bin/reload.sh
 RUN chmod +x /usr/local/bin/sensor.sh
 
-COPY config/nginx/nginx.conf.ctmpl /etc/containerpilot/
+COPY config/nginx/ /etc/containerpilot/
 
 CMD [ "/usr/local/bin/containerpilot", \
     "nginx", \

@@ -40,7 +40,7 @@ http {
 
         charset utf-8;
 
-        location /nginx-health {
+        location /health {
             access_log off;
             error_log off;
             stub_status on;
