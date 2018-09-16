@@ -4,12 +4,12 @@
     "logging": {"level": "DEBUG"},
     "services": [
         {
-            "name": "microservice_base_fpm",
-            "port": 80,
+            "name": "microservice-user-fpm",
+            "port": 9000,
             "health": "/usr/local/sbin/php-fpm -t",
             "poll": 10,
             "ttl": 25,
-            "interfaces": ["eth1", "eth0"]
+            "interfaces": ["eth0"]
         }
     ],
     "backends": [
