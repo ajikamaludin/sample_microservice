@@ -34,12 +34,14 @@ services:
             - CONSUL=autodiscovery
 
     microservice_battle_nginx:
+    
         build: ./microservices/battle/nginx/
         volumes_from:
             - source_battle
         links:
             - autodiscovery
             - microservice_battle_fpm
+            - microservice_user_fpm
         environment:
             - BACKEND=microservice-battle-fpm
             - CONSUL=autodiscovery
@@ -63,6 +65,7 @@ services:
             - CONSUL=autodiscovery
 
     microservice_location_nginx:
+    
         build: ./microservices/location/nginx/
         volumes_from:
             - source_location
@@ -91,6 +94,7 @@ services:
             - CONSUL=autodiscovery
 
     microservice_secret_nginx:
+    
         build: ./microservices/secret/nginx/
         volumes_from:
             - source_secret
@@ -119,6 +123,7 @@ services:
             - CONSUL=autodiscovery
 
     microservice_user_nginx:
+    
         build: ./microservices/user/nginx/
         volumes_from:
             - source_user
