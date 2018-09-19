@@ -27,6 +27,7 @@ services:
             - source_battle
         links:
             - autodiscovery
+            - microservice_user_nginx
         expose:
             - 9000
         environment:
@@ -34,14 +35,12 @@ services:
             - CONSUL=autodiscovery
 
     microservice_battle_nginx:
-    
         build: ./microservices/battle/nginx/
         volumes_from:
             - source_battle
         links:
             - autodiscovery
             - microservice_battle_fpm
-            - microservice_user_fpm
         environment:
             - BACKEND=microservice-battle-fpm
             - CONSUL=autodiscovery
@@ -87,6 +86,7 @@ services:
             - source_secret
         links:
             - autodiscovery
+            - microservice_secret_database
         expose:
             - 9000
         environment:
@@ -94,7 +94,6 @@ services:
             - CONSUL=autodiscovery
 
     microservice_secret_nginx:
-    
         build: ./microservices/secret/nginx/
         volumes_from:
             - source_secret
@@ -107,6 +106,17 @@ services:
         ports:
             - 8083:80
             - 9093:9090
+
+    microservice_secret_database:
+        build: ./microservices/secret/database/
+        environment:
+            - CONSUL=autodiscovery
+            - MYSQL_ROOT_PASSWORD=mysecret
+            - MYSQL_DATABASE=finding_secrets
+            - MYSQL_USER=secret
+            - MYSQL_PASSWORD=mysecret
+        ports:
+            - 6666:3306
     ##
     # User Microservice
     ##
@@ -123,7 +133,6 @@ services:
             - CONSUL=autodiscovery
 
     microservice_user_nginx:
-    
         build: ./microservices/user/nginx/
         volumes_from:
             - source_user
